@@ -1,0 +1,18 @@
+package com.santander.ib.api.response;
+
+import org.mapstruct.Mapping;
+
+import lombok.Data;
+
+@Data
+public class OperationResponse {
+	
+	@Mapping(ignore = true)
+	private String operationType;
+	
+	private String operationValue;
+	
+	private String previousBalance;
+	
+	private String newBalance;
+}

@@ -1,0 +1,29 @@
+package com.santander.ib.api.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
+import com.santander.ib.api.mapper.CustomerMapper;
+import com.santander.ib.api.mapper.TransactionMapper;
+import com.santander.ib.repository.CustomerRepository;
+import com.santander.ib.repository.TransactionRepository;
+
+@SpringBootTest
+@AutoConfigureMockMvc(addFilters = false)
+public class CustomerServiceTest {
+	
+	@MockBean
+	private CustomerMapper customerMapper;
+	
+	@MockBean
+	private CustomerRepository customerRepository;
+	
+	@MockBean
+	private TransactionRepository transactionRepository;
+	
+	@MockBean
+	private TransactionMapper transactionMapper;
+
+}

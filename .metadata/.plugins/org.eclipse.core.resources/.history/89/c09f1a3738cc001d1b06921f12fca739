@@ -1,0 +1,27 @@
+package com.santander.ib.api.mapper;
+
+import java.util.List;
+
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
+
+import com.santander.ib.api.request.CustomerRequest;
+import com.santander.ib.api.response.CustomerResponse;
+import com.santander.ib.domain.entity.Customer;
+
+@Mapper(componentModel = "spring")
+
+public interface CustomerMapperBB {
+	
+	CustomerMapperBB INSTANCE =  Mappers.getMapper(CustomerMapperBB.class);
+	
+	public CustomerResponse toCustomerResponse(Customer customer);
+	
+	public List<CustomerResponse> toListCustomerResponse(List<Customer> customer);
+	
+	@Mapping(source = "id",target = "transaction.customer_id")
+	public Customer toCustomer(CustomerRequest customerRequest);
+
+}

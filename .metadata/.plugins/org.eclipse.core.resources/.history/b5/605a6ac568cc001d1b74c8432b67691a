@@ -1,0 +1,81 @@
+package com.santander.ib.api.controller;
+
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.santander.ib.api.mapper.CustomerMapper;
+import com.santander.ib.api.request.CustomerRequest;
+import com.santander.ib.api.request.TransactionRequest;
+import com.santander.ib.api.response.CustomerResponse;
+import com.santander.ib.api.response.OperationResponse;
+import com.santander.ib.api.response.Teste;
+import com.santander.ib.service.CustomerService;
+
+@RestController
+@Validated
+public class CustomerController {
+	
+	public static final String API_VERSION = "/v1";
+	
+	@Autowired
+	private CustomerService customerService;
+	
+	@Autowired
+	private CustomerMapper customerMapper;
+	
+	private final Logger log = LoggerFactory.getLogger(CustomerController.class);
+	
+	@RequestMapping(path = API_VERSION + "/customers", method = RequestMethod.GET)
+	public ResponseEntity <List<CustomerResponse>> getAllCustomers(){
+	        List<CustomerResponse> customerResponse = customerService.listAll();	                
+
+	        return ResponseEntity.status(HttpStatus.OK).body(customerResponse);
+	}
+	
+	@RequestMapping(path = API_VERSION + "/customers", method = RequestMethod.POST)
+	public ResponseEntity<CustomerResponse> addCustomer(@RequestBody CustomerRequest request) {
+		CustomerResponse customerSaved = customerService.save(request);
+        
+        return ResponseEntity.status(HttpStatus.OK).body(customerSaved);
+	}
+	
+	@RequestMapping(path = API_VERSION + "/customers/{id}", method = RequestMethod.GET)
+    public ResponseEntity<CustomerResponse> searchById(@PathVariable Long id) {
+        log.info("realizando busca por customer id: {}", id);
+        
+        return ResponseEntity.status(HttpStatus.OK).body(customerService.getCustomerByIdResponse(id));
+        
+//        return customerService.getCustomerById(id)
+//                .map(customerMapper::toCustomerResponse)
+//                .map(customerCompletoResponse -> ResponseEntity.status(HttpStatus.OK).body(customerCompletoResponse))
+//                .orElse(ResponseEntity.notFound().build());
+    }
+	
+	@RequestMapping(path = API_VERSION + "/customers/{customerId}", method = RequestMethod.PUT)
+	public ResponseEntity<CustomerResponse> editCustomer(@PathVariable Long customerId,@Valid @RequestBody CustomerRequest request) {
+		CustomerResponse customerSaved = customerService.editCustomer(customerId, request);
+        
+        return ResponseEntity.status(HttpStatus.OK).body(customerSaved);
+    }
+	
+	@RequestMapping(path = API_VERSION + "/customers/performBankOperation/{customerId}", method = RequestMethod.PUT)
+	public ResponseEntity<OperationResponse> withdrawBalance(@PathVariable Long customerId, @RequestBody TransactionRequest customerTransactionRequest) {
+		CustomerResponse customerWithdrawSaved = customerService.performBankOperation(customerId, customerTransactionRequest);
+        
+        return ResponseEntity.status(HttpStatus.OK).body(teste);
+    }
+}

@@ -1,0 +1,11 @@
+package com.santander.ib.api.response;
+
+public class Teste {
+	
+	private String valorX;
+	
+	private String valorY;
+	
+	private String valorZ;
+
+}

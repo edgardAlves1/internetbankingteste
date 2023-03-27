@@ -1,0 +1,30 @@
+package com.santander.ib.domain;
+
+import java.math.BigDecimal;
+
+public class TransactionFeeValues {
+	
+	private BigDecimal FEE_1_PERCENT = new BigDecimal(1);
+	
+	private BigDecimal FEE_0_4_PERCENT = new BigDecimal(0.4);
+	
+	public BigDecimal applyWithdrawFee(BigDecimal customerBalance, BigDecimal withdrawValue) {
+		
+		Integer comparationValue = withdrawValue.compareTo(new BigDecimal(100));
+		
+		if() {
+			
+		}
+		
+		return null;
+	}
+	
+	public static void main(String[] args) {
+		BigDecimal valorSaque = new BigDecimal(100);
+		Integer comparationValue = valorSaque.compareTo(new BigDecimal(100));
+		
+		System.out.println("Valor retornado da pergunta se o valor do saque= "+valorSaque+"  "+comparationValue);
+	}
+	 
+
+}

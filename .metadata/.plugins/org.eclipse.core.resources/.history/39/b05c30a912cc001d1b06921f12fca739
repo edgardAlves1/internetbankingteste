@@ -1,0 +1,5 @@
+package com.santander.ib.api.response;
+
+public class TransactionResponse {
+
+}

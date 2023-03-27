@@ -1,0 +1,11 @@
+package com.santander.ib.service;
+
+import java.util.List;
+
+import com.santander.ib.domain.Customer;
+
+public interface CustomerService {
+	
+	public List<Customer> listAll();
+	
+}

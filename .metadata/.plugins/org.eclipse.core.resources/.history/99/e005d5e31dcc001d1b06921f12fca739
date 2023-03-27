@@ -1,0 +1,37 @@
+package com.santander.ib.api.response;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonFormat(shape = JsonFormat.Shape.ARRAY)
+//@JsonPropertyOrder({ "name", "rate", "age" })
+public class CustomerResponse {
+	
+	private Long id;
+	
+	private String name;
+	
+	private Boolean exclusivePlan;
+	
+	private BigDecimal balance;
+	
+	private String accountNumber;
+	
+	private Date birthDate = new Date();
+	
+	private List<TransactionResponse> transactions;
+
+}

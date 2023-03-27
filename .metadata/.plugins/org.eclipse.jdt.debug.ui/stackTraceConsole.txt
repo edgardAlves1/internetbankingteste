@@ -1,0 +1,4 @@
+@RequestMapping(path = API_VERSION + "/listCustomer", method = RequestMethod.GET)
+	public List<Customer> list(){
+		return customerRepository.findAll();
+	}

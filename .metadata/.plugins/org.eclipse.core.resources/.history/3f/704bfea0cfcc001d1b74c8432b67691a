@@ -1,0 +1,70 @@
+package com.santander.ib.api.service;
+
+import java.util.Optional;
+
+
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.web.client.HttpClientErrorException.UnprocessableEntity;
+import org.testng.annotations.Test;
+
+import com.santander.ib.api.mapper.CustomerMapper;
+import com.santander.ib.api.mapper.TransactionMapper;
+import com.santander.ib.domain.entity.Customer;
+import com.santander.ib.exception.BusinessException;
+import com.santander.ib.repository.CustomerRepository;
+import com.santander.ib.repository.TransactionRepository;
+import com.santander.ib.service.CustomerServiceImpl;
+
+@SpringBootTest
+@AutoConfigureMockMvc(addFilters = false)
+public class CustomerServiceTest {
+	
+	@MockBean
+	private CustomerMapper customerMapper;
+	
+	@MockBean
+	private CustomerRepository customerRepository;
+	
+	@MockBean
+	private TransactionRepository transactionRepository;
+	
+	@MockBean
+	private TransactionMapper transactionMapper;
+	
+	@Autowired
+	private CustomerServiceImpl customerService;
+	
+	@Test
+	public void listAllCustomersOkTest() {
+		customerService.listAll();
+	}
+	
+	@Test
+	public void getCustomerByIdOptTest() {
+		Long customerId = 1L;
+		customerService.getCustomerByIdOpt(customerId);
+	}
+	
+	@Test
+	public void getCustomerByIdTest() {
+		Long customerId = 1L;
+		Optional<Customer> optCustomer = Optional.of(new Customer());
+		Mockito.when(customerRepository.findById(customerId)).thenReturn(optCustomer);
+		
+		customerService.getCustomerById(customerId);
+	}
+	
+	@Test(expectedExceptions = BusinessException.class)
+	public void getCustomerByIdCustomerAlreadyExistsTest() {
+		Long customerId = 1L;
+		Optional<Customer> optCustomer = null;
+		Mockito.when(customerRepository.findById(customerId)).thenReturn(optCustomer);
+		
+		customerService.getCustomerById(customerId);
+	}
+
+}

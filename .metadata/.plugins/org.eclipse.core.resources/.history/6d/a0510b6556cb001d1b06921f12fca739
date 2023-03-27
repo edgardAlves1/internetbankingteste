@@ -1,0 +1,18 @@
+package com.santander.ib.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.santander.ib.api.request.CustomerTransactionRequest;
+import com.santander.ib.domain.entity.Customer;
+
+public interface CustomerService {
+	
+	public List<Customer> listAll();
+	
+	public Optional<Customer> getCustomerById(Long id);
+	
+	public Customer editCustomer(Long customerId, Customer customerRequest);
+	
+	public Customer withdrawBalance(Long customerId, CustomerTransactionRequest customerTransactionRequest);
+}

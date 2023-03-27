@@ -1,0 +1,154 @@
+package com.santander.ib.api.controller;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.santander.ib.api.request.CustomerRequest;
+import com.santander.ib.api.request.TransactionRequest;
+import com.santander.ib.domain.entity.Customer;
+import com.santander.ib.domain.entity.Transaction;
+import com.santander.ib.exception.BusinessException;
+import com.santander.ib.repository.CustomerRepository;
+
+@SpringBootTest
+@AutoConfigureMockMvc(addFilters = false)
+public class CustomerControllerTest {
+	
+	@Autowired
+    ObjectMapper mapper;
+
+    @Autowired
+    MockMvc mockMvc;
+
+    @Autowired
+    CustomerRepository customerRepository;
+
+    @BeforeEach
+    void up() {
+        Customer customer = new Customer();
+        customer.setAccountNumber("123456");
+        customer.setBalance(new BigDecimal(500.00));
+        customer.setBirthDate(new Date());
+        customer.setExclusivePlan(false);
+        customer.setId(1L);
+        customer.setName("Cliente Mock");
+        
+        List<Transaction> transactions = new ArrayList<>();
+        Transaction transaction = new Transaction();
+        transaction.setCustomer(customer);
+        transaction.setId(1L);
+        transaction.setTransactionDate(new Date());
+        transaction.setTransactionValue(new BigDecimal(550.00));
+        transaction.setType(1);
+        
+        transactions.add(transaction);
+        customer.setTransactions(transactions);
+        
+        customerRepository.save(customer);
+    }
+
+    @AfterEach
+    void down() {
+        customerRepository.deleteAll();
+    }
+
+    @Test
+    @DisplayName("List All Customers")
+    void listCustimers() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/customers"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("List Customer by Id")
+    void listCustomerById() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/v1/customers"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("Save Customer Sucess")
+    void saveCustomer() throws Exception {
+        List<TransactionRequest> transactions = new ArrayList<>();
+        TransactionRequest transactionRequest = new TransactionRequest();
+        transactionRequest.setTransactionDate(new Date());
+        transactionRequest.setTransactionValue(new BigDecimal(550.00));
+        transactionRequest.setType(1);
+        
+        transactions.add(transactionRequest);
+        
+        
+        CustomerRequest customerRequest = CustomerRequest.builder()
+                .id(1L)
+                .name("Customer")
+                .exclusivePlan(false)
+                .balance(new BigDecimal(500))
+                .accountNumber("1234567")
+                .transactions(transactions)
+                .build();
+
+        String pacienteRequest = mapper.writeValueAsString(customerRequest);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/v1/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content(pacienteRequest)
+                )
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(MockMvcResultHandlers.print());
+    }
+    
+    @Test
+    @DisplayName("Save Customer Sucess")
+    void teste() throws Exception {
+        List<TransactionRequest> transactions = new ArrayList<>();
+        TransactionRequest transactionRequest = new TransactionRequest();
+        transactionRequest.setTransactionDate(new Date());
+        transactionRequest.setTransactionValue(new BigDecimal(550.00));
+        transactionRequest.setType(1);
+        
+        transactions.add(transactionRequest);
+        
+        
+        CustomerRequest customerRequest = CustomerRequest.builder()
+                .id(1L)
+                .name("Customer")
+                .exclusivePlan(false)
+                .balance(new BigDecimal(500))
+                .accountNumber("1234567")
+                .transactions(transactions)
+                .build();
+
+        String pacienteRequest = mapper.writeValueAsString("");
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/v1/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+                        .content("")
+                )
+        .andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+      .andExpect(result -> Assertions.assertThat(result.getResolvedException() instanceof BusinessException))
+      .andDo(MockMvcResultHandlers.print());
+    }
+
+
+}

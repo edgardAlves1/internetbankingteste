@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="CustomerControllerTest" project="internetbanking-api" tests="1" started="1" failures="0" errors="0" ignored="0">
+  <testsuite name="com.santander.ib.api.controller.CustomerControllerTest" time="0.613" displayname="CustomerControllerTest" uniqueid="[engine:junit-jupiter]/[class:com.santander.ib.api.controller.CustomerControllerTest]">
+    <testcase name="listCustimers" classname="com.santander.ib.api.controller.CustomerControllerTest" time="0.613" displayname="List All Customers" uniqueid="[engine:junit-jupiter]/[class:com.santander.ib.api.controller.CustomerControllerTest]/[method:listCustimers()]"/>
+  </testsuite>
+</testrun>

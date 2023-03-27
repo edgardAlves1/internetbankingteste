@@ -1,0 +1,139 @@
+package com.santander.ib.service;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.santander.ib.api.mapper.CustomerMapperBB;
+import com.santander.ib.api.mapper.TransactionMapper;
+import com.santander.ib.api.request.CustomerRequest;
+import com.santander.ib.api.request.CustomerTransactionRequest;
+import com.santander.ib.api.request.TransactionRequest;
+import com.santander.ib.api.response.CustomerResponse;
+import com.santander.ib.domain.entity.Customer;
+import com.santander.ib.domain.entity.Transaction;
+import com.santander.ib.domain.enums.TransactionType;
+import com.santander.ib.exception.BusinessException;
+import com.santander.ib.repository.CustomerRepository;
+import com.santander.ib.util.TransactionFeeUtil;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class CustomerServiceImpl implements CustomerService{
+	
+	@Autowired
+	private CustomerMapperBB customerMapperBB;
+	
+	@Autowired
+	private CustomerRepository customerRepository;
+	
+	@Autowired
+	private TransactionMapper transactionMapper;
+	
+	
+
+	@Override
+	public List<CustomerResponse> listAll() {
+		return customerMapperBB.toListCustomerResponse(customerRepository.findAll());
+	}
+	
+	@Override
+	public Optional<Customer> getCustomerById(Long id) {
+		return customerRepository.findById(id);
+	}
+
+	@Override
+    public CustomerResponse editCustomer(Long customerId, CustomerRequest customerRequest) {
+        Optional<Customer> optCustomer = this.getCustomerById(customerId);
+
+        if (optCustomer.isEmpty()) {
+            throw new BusinessException("Cliente não encontrado na base");
+        }
+        
+        Customer customer = customerMapperBB.toCustomer(customerRequest);
+        customer.setId(customerId);
+
+        /**
+         * Criar Regra da conta ja Cadastrada apartada
+         */
+        
+        return customerMapperBB.toCustomerResponse(customerRepository.save(customer));
+    }
+	
+	@Override
+	public CustomerResponse save(CustomerRequest customerRequest) {
+        boolean accountAlreadyRegistered = false;
+        Customer customer = customerMapperBB.toCustomer(customerRequest);
+        customer.getTransactions().forEach((t) -> t.setCustomer(customer));
+        
+        
+        Optional<Customer> optCustomer = customerRepository.findByAccountNumber(customer.getAccountNumber());
+
+        if (optCustomer.isPresent()) {
+            if (!optCustomer.get().getId().equals(customer.getId())) {
+            	accountAlreadyRegistered = true;
+            }
+        }
+
+        if (accountAlreadyRegistered) {
+            throw new BusinessException("Esta conta ja foi cadastrada");
+        }
+
+        return customerMapperBB.toCustomerResponse(customerRepository.save(customer));
+    }
+	
+	@Override
+    public CustomerResponse performBankOperation(Long customerId, TransactionRequest customerTransactionRequest) {
+        Optional<Customer> optCustomer = this.getCustomerById(customerId);
+
+        if (optCustomer.isEmpty()) {
+            throw new BusinessException("Não foi possível efetuar o saque, pois o cliente não encontrado na base");
+        }
+
+        return customerMapperBB.toCustomerResponse(updateCustomerBalance(optCustomer.get(), customerTransactionRequest));
+    }
+	
+	private Customer updateCustomerBalance(Customer customer, CustomerTransactionRequest customerTransactionRequest) {
+		BigDecimal customerNewBalance;
+		
+		if(customerTransactionRequest.getTransactionType().equals(TransactionType.WITHDRAW)) {
+			customerNewBalance = customer.getBalance()
+					.subtract(TransactionFeeUtil.calculateWithdrawFee(customerTransactionRequest.getTransactionValue(), customer.getExclusivePlan())); 
+			customer.setBalance(customerNewBalance);
+		}else {
+			customerNewBalance = customer.getBalance()
+					.add(customerTransactionRequest.getTransactionValue()); 
+			customer.setBalance(customerNewBalance);
+		}
+		
+		return customerRepository.save(customer);
+    }
+	
+	
+	private Customer updateCustomerBalance(Customer customer, TransactionRequest customerTransactionRequest) {
+		BigDecimal customerNewBalance;
+		
+		if(customerTransactionRequest.getType().equals(2)) {
+			customerNewBalance = customer.getBalance()
+					.subtract(TransactionFeeUtil.calculateWithdrawFee(customerTransactionRequest.getTransactionValue(), customer.getExclusivePlan())); 
+			customer.setBalance(customerNewBalance);
+		}else {
+			customerNewBalance = customer.getBalance()
+					.add(customerTransactionRequest.getTransactionValue()); 
+			customer.setBalance(customerNewBalance);
+		}
+		
+		Transaction transaction = transactionMapper.toTransaction(customerTransactionRequest);
+		transaction.setCustomer(customer);
+		customer.getTransactions().add(transaction);
+		
+		return customerRepository.save(customer);
+    }
+}

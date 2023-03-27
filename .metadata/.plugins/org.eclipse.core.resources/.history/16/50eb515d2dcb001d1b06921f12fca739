@@ -1,0 +1,57 @@
+package com.santander.ib.domain;
+
+import java.math.BigDecimal;
+
+public class TransactionFeeValues {
+	
+	private int valorComparacaoDecimalMenor = -1;
+	private int valorComparacaoDecimalIgual = 0; 
+	private int valorComparacaoDecimalMaior = 1;
+	
+	public BigDecimal applyWithdrawFee(BigDecimal customerBalance, BigDecimal withdrawValue) {
+		BigDecimal FEE_0_4_PERCENT = new BigDecimal(0.4).divide(new BigDecimal("100"));
+		BigDecimal FEE_1_PERCENT = new BigDecimal(1.00);
+		
+		int comparationValue_100 = withdrawValue.compareTo(new BigDecimal(100));
+		int comparationValue_300 = withdrawValue.compareTo(new BigDecimal(300));
+		
+		
+		if( (comparationValue_100 == valorComparacaoDecimalMaior) && 
+				( comparationValue_300 == valorComparacaoDecimalMenor || comparationValue_300 == valorComparacaoDecimalIgual)) {
+			BigDecimal percentageValue = FEE_0_4_PERCENT.divide(new BigDecimal("100"));
+	        BigDecimal fee = withdrawValue.multiply(valorDecimal);
+	        BigDecimal valorTotal = saque.add(juros);
+		}else if() {
+			
+		}else {
+			
+		}
+		
+		return null;
+	}
+	
+	public static void main(String[] args) {
+//		BigDecimal valorSaque = new BigDecimal(100.1);
+//		Integer comparationValue = valorSaque.compareTo(new BigDecimal(100));
+//		
+//		System.out.println("Valor retornado da pergunta se o valor do saque= "+valorSaque+"  "+comparationValue);
+		
+//		BigDecimal saque = new BigDecimal("1000.00");
+//        BigDecimal porcentagem = new BigDecimal("10.00");
+//
+//        BigDecimal valorDecimal = porcentagem.divide(new BigDecimal("100"));
+//        BigDecimal juros = saque.multiply(valorDecimal);
+//        BigDecimal valorTotal = saque.add(juros);
+//
+//        System.out.println("Valor do saque: " + saque);
+//        System.out.println("Porcentagem de juros: " + porcentagem + "%");
+//        System.out.println("Valor dos juros: " + juros);
+//        System.out.println("Valor total do saque: " + valorTotal);
+		
+		BigDecimal FEE_0_4_PERCENT = new BigDecimal(0.4).divide(new BigDecimal("250.00"));
+		
+		System.out.println("Valor juros baseados em 250 reais de saque "+FEE_0_4_PERCENT);
+	}
+	 
+
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="CustomerServiceImplTest" project="internetbanking-api" tests="5" started="5" failures="0" errors="0" ignored="0">
+  <testsuite name="com.santander.ib.api.service.CustomerServiceImplTest" time="0.245" displayname="CustomerServiceImplTest" uniqueid="[engine:junit-jupiter]/[class:com.santander.ib.api.service.CustomerServiceImplTest]">
+    <testcase name="getCustomerByIdOptTest" classname="com.santander.ib.api.service.CustomerServiceImplTest" time="0.168" displayname="getCustomerByIdOptTest()" uniqueid="[engine:junit-jupiter]/[class:com.santander.ib.api.service.CustomerServiceImplTest]/[method:getCustomerByIdOptTest()]"/>
+    <testcase name="getCustomerByIdTest" classname="com.santander.ib.api.service.CustomerServiceImplTest" time="0.024" displayname="getCustomerByIdTest()" uniqueid="[engine:junit-jupiter]/[class:com.santander.ib.api.service.CustomerServiceImplTest]/[method:getCustomerByIdTest()]"/>
+    <testcase name="editCustomerByIdTest" classname="com.santander.ib.api.service.CustomerServiceImplTest" time="0.015" displayname="editCustomerByIdTest()" uniqueid="[engine:junit-jupiter]/[class:com.santander.ib.api.service.CustomerServiceImplTest]/[method:editCustomerByIdTest()]"/>
+    <testcase name="listAllCustomersOkTest" classname="com.santander.ib.api.service.CustomerServiceImplTest" time="0.012" displayname="listAllCustomersOkTest()" uniqueid="[engine:junit-jupiter]/[class:com.santander.ib.api.service.CustomerServiceImplTest]/[method:listAllCustomersOkTest()]"/>
+    <testcase name="deleteCustomerByIdTest" classname="com.santander.ib.api.service.CustomerServiceImplTest" time="0.026" displayname="deleteCustomerByIdTest()" uniqueid="[engine:junit-jupiter]/[class:com.santander.ib.api.service.CustomerServiceImplTest]/[method:deleteCustomerByIdTest()]"/>
+  </testsuite>
+</testrun>

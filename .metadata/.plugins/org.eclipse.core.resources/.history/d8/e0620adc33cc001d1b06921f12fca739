@@ -1,0 +1,123 @@
+package com.santander.ib.api.mapper;
+
+import com.santander.ib.api.request.CustomerRequest;
+import com.santander.ib.api.request.TransactionRequest;
+import com.santander.ib.api.response.CustomerResponse;
+import com.santander.ib.api.response.TransactionResponse;
+import com.santander.ib.domain.entity.Customer;
+import com.santander.ib.domain.entity.Transaction;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
+
+@Generated(
+    value = "org.mapstruct.ap.MappingProcessor",
+    date = "2023-03-26T21:10:21-0300",
+    comments = "version: 1.5.3.Final, compiler: Eclipse JDT (IDE) 3.18.0.v20190522-0428, environment: Java 11.0.2 (Oracle Corporation)"
+)
+public class CustomerMapperBBImpl implements CustomerMapperBB {
+
+    @Override
+    public CustomerResponse toCustomerResponse(Customer customer) {
+        if ( customer == null ) {
+            return null;
+        }
+
+        CustomerResponse customerResponse = new CustomerResponse();
+
+        customerResponse.setAccountNumber( customer.getAccountNumber() );
+        customerResponse.setBalance( customer.getBalance() );
+        customerResponse.setBirthDate( customer.getBirthDate() );
+        customerResponse.setExclusivePlan( customer.getExclusivePlan() );
+        customerResponse.setId( customer.getId() );
+        customerResponse.setName( customer.getName() );
+        customerResponse.setTransactions( transactionListToTransactionResponseList( customer.getTransactions() ) );
+
+        return customerResponse;
+    }
+
+    @Override
+    public List<CustomerResponse> toListCustomerResponse(List<Customer> customer) {
+        if ( customer == null ) {
+            return null;
+        }
+
+        List<CustomerResponse> list = new ArrayList<CustomerResponse>( customer.size() );
+        for ( Customer customer1 : customer ) {
+            list.add( toCustomerResponse( customer1 ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public Customer toCustomer(CustomerRequest customerRequest) {
+        if ( customerRequest == null ) {
+            return null;
+        }
+
+        Customer customer = new Customer();
+
+        customer.setAccountNumber( customerRequest.getAccountNumber() );
+        customer.setBalance( customerRequest.getBalance() );
+        customer.setBirthDate( customerRequest.getBirthDate() );
+        customer.setExclusivePlan( customerRequest.getExclusivePlan() );
+        customer.setId( customerRequest.getId() );
+        customer.setName( customerRequest.getName() );
+        customer.setTransactions( transactionRequestListToTransactionList( customerRequest.getTransactions() ) );
+
+        return customer;
+    }
+
+    protected TransactionResponse transactionToTransactionResponse(Transaction transaction) {
+        if ( transaction == null ) {
+            return null;
+        }
+
+        TransactionResponse transactionResponse = new TransactionResponse();
+
+        transactionResponse.setId( transaction.getId() );
+        transactionResponse.setType( transaction.getType() );
+
+        return transactionResponse;
+    }
+
+    protected List<TransactionResponse> transactionListToTransactionResponseList(List<Transaction> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<TransactionResponse> list1 = new ArrayList<TransactionResponse>( list.size() );
+        for ( Transaction transaction : list ) {
+            list1.add( transactionToTransactionResponse( transaction ) );
+        }
+
+        return list1;
+    }
+
+    protected Transaction transactionRequestToTransaction(TransactionRequest transactionRequest) {
+        if ( transactionRequest == null ) {
+            return null;
+        }
+
+        Transaction transaction = new Transaction();
+
+        transaction.setTransactionValue( transactionRequest.getTransactionValue() );
+        transaction.setType( transactionRequest.getType() );
+
+        return transaction;
+    }
+
+    protected List<Transaction> transactionRequestListToTransactionList(List<TransactionRequest> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<Transaction> list1 = new ArrayList<Transaction>( list.size() );
+        for ( TransactionRequest transactionRequest : list ) {
+            list1.add( transactionRequestToTransaction( transactionRequest ) );
+        }
+
+        return list1;
+    }
+}

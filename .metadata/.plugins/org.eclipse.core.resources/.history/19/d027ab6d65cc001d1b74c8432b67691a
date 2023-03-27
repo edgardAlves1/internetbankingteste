@@ -1,0 +1,15 @@
+package com.santander.ib.api.response;
+
+import lombok.Data;
+
+@Data
+public class OperationResponse {
+	
+	private String operationValue;
+	
+	private String feePercent;
+	
+	private String feeValue;
+	
+	private String totalOperationValue;
+}

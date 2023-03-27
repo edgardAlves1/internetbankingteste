@@ -1,0 +1,5 @@
+package com.santander.ib.domain.response;
+
+public class CustomerResponse {
+
+}

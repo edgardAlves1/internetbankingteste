@@ -1,0 +1,74 @@
+package com.santander.ib.api.mapper;
+
+import com.santander.ib.api.request.CustomerRequest;
+import com.santander.ib.api.response.CustomerResponse;
+import com.santander.ib.domain.entity.Customer;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = "org.mapstruct.ap.MappingProcessor",
+    date = "2023-03-27T12:26:38-0300",
+    comments = "version: 1.5.3.Final, compiler: Eclipse JDT (IDE) 3.18.0.v20190522-0428, environment: Java 11.0.2 (Oracle Corporation)"
+)
+@Component
+public class CustomerMapperImpl implements CustomerMapper {
+
+    @Autowired
+    private TransactionMapper transactionMapper;
+
+    @Override
+    public CustomerResponse toCustomerResponse(Customer customer) {
+        if ( customer == null ) {
+            return null;
+        }
+
+        CustomerResponse customerResponse = new CustomerResponse();
+
+        customerResponse.setAccountNumber( customer.getAccountNumber() );
+        customerResponse.setBalance( customer.getBalance() );
+        customerResponse.setBirthDate( customer.getBirthDate() );
+        customerResponse.setExclusivePlan( customer.getExclusivePlan() );
+        customerResponse.setId( customer.getId() );
+        customerResponse.setName( customer.getName() );
+        customerResponse.setTransactions( transactionMapper.toTransactionResponseList( customer.getTransactions() ) );
+
+        return customerResponse;
+    }
+
+    @Override
+    public List<CustomerResponse> toListCustomerResponse(List<Customer> customer) {
+        if ( customer == null ) {
+            return null;
+        }
+
+        List<CustomerResponse> list = new ArrayList<CustomerResponse>( customer.size() );
+        for ( Customer customer1 : customer ) {
+            list.add( toCustomerResponse( customer1 ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public Customer toCustomer(CustomerRequest customerRequest) {
+        if ( customerRequest == null ) {
+            return null;
+        }
+
+        Customer customer = new Customer();
+
+        customer.setAccountNumber( customerRequest.getAccountNumber() );
+        customer.setBalance( customerRequest.getBalance() );
+        customer.setBirthDate( customerRequest.getBirthDate() );
+        customer.setExclusivePlan( customerRequest.getExclusivePlan() );
+        customer.setId( customerRequest.getId() );
+        customer.setName( customerRequest.getName() );
+        customer.setTransactions( transactionMapper.toTransaction( customerRequest.getTransactions() ) );
+
+        return customer;
+    }
+}

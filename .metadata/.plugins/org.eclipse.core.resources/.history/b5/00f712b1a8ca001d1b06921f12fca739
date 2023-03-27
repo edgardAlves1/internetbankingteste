@@ -1,0 +1,68 @@
+package com.santander.ib.api.controller;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import com.santander.ib.api.mapper.CustomerMapper;
+import com.santander.ib.api.response.CustomerResponse;
+import com.santander.ib.domain.entity.Customer;
+import com.santander.ib.repository.CustomerRepository;
+import com.santander.ib.service.CustomerService;
+
+@RestController
+public class CustomerController {
+	
+	public static final String API_VERSION = "/v1";
+	
+	@Autowired
+	private CustomerService customerService;
+	
+	@Autowired
+	private CustomerMapper customerMapper;
+	
+	@Autowired
+	private CustomerRepository customerRepository;
+	
+	private final Logger log = LoggerFactory.getLogger(CustomerController.class);
+	
+	
+	@RequestMapping(path = API_VERSION + "/customers", method = RequestMethod.GET)
+	public ResponseEntity <List<CustomerResponse>> getAllCustomers(){
+
+	        List<CustomerResponse> customerResponse = customerService.listAll()
+	                .stream()
+	                .map(customerMapper::toCustomerResponse)
+	                .collect(Collectors.toList());
+
+	        return ResponseEntity.status(HttpStatus.OK).body(customerResponse);
+	}
+	
+	
+	@RequestMapping(path = API_VERSION + "/customers", method = RequestMethod.POST)
+	public ResponseEntity<CustomerResponse> addCustomer(@RequestBody Customer customer) {
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(customerMapper.toCustomerResponse(customerRepository.save(customer)));
+	}
+	
+	@RequestMapping(path = API_VERSION + "/customer/{id}", method = RequestMethod.GET)
+	
+    public ResponseEntity<CustomerResponse> buscarPorId(@PathVariable Long id) {
+        log.info("realizando busca por customer id: {}", id);
+        return service.buscarPorId(id)
+                .map(mapper::toPacienteCompletoResponse)
+                .map(pacienteCompletoResponse -> ResponseEntity.status(HttpStatus.OK).body(pacienteCompletoResponse))
+                .orElse(ResponseEntity.notFound().build());
+    }
+	
+
+}

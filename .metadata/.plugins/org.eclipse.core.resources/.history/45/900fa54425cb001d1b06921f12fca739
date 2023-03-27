@@ -1,0 +1,64 @@
+package com.santander.ib.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.santander.ib.domain.entity.Customer;
+import com.santander.ib.exception.BusinessException;
+import com.santander.ib.repository.CustomerRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class CustomerServiceImpl implements CustomerService{
+	
+	@Autowired
+	private CustomerRepository customerRepository;
+
+	@Override
+	public List<Customer> listAll() {
+		return customerRepository.findAll();
+	}
+	
+	@Override
+	public Optional<Customer> getCustomerById(Long id) {
+		return customerRepository.findById(id);
+	}
+
+	@Override
+    public Customer editCustomer(Long customerId, Customer customerRequest) {
+        Optional<Customer> optCustomer = this.getCustomerById(customerId);
+
+        if (optCustomer.isEmpty()) {
+            throw new BusinessException("Cliente não encontrado na base");
+        }
+
+        customerRequest.setId(customerId);
+
+        return save(customerRequest);
+    }
+	
+	public Customer save(Customer customer) {
+        boolean accountAlreadyRegistered = false;
+
+        Optional<Customer> optCustomer = customerRepository.findByAccountNumber(customer.getAccountNumber());
+
+        if (optCustomer.isPresent()) {
+            if (!optCustomer.get().getId().equals(customer.getId())) {
+            	accountAlreadyRegistered = true;
+            }
+        }
+
+        if (accountAlreadyRegistered) {
+            throw new BusinessException("Esta conta ja foi cadastrada");
+        }
+
+        return customerRepository.save(customer);
+    }
+}

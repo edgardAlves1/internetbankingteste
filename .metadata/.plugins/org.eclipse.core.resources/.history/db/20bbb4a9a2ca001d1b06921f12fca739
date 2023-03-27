@@ -1,0 +1,30 @@
+package com.santander.ib.domain.response;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class CustomerResponse {
+	
+	private Long id;
+	
+	private String name;
+	
+	private Boolean exclusivePlan;
+	
+	private BigDecimal balance;
+	
+	private String accountNumber;
+	
+	private Date birthDate = new Date();
+
+}

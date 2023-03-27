@@ -1,0 +1,70 @@
+package com.santander.ib.util;
+
+import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Locale;
+
+import com.santander.ib.api.response.TransactionFeeResponse;
+
+public class TransactionFeeUtil {
+	
+	private static int decimalComparisonLower = -1;
+	private static int decimalComparisonEquals = 0; 
+	private static int decimalComparisonHigher = 1;
+	
+	public static TransactionFeeResponse calculateWithdrawFee(BigDecimal withdrawValue, Boolean exclusivePlan) {
+		int comparation_withdrawValue100 = withdrawValue.compareTo(new BigDecimal(100));
+		int comparation_withdrawValue300 = withdrawValue.compareTo(new BigDecimal(300));
+		TransactionFeeResponse transactionFeeResponse = new TransactionFeeResponse();
+		
+		 if(exclusivePlan || comparation_withdrawValue100 == decimalComparisonLower || comparation_withdrawValue100 == decimalComparisonEquals) {
+			 transactionFeeResponse.setResult(withdrawValue);
+			 
+			return transactionFeeResponse;
+		} else if( (comparation_withdrawValue100 == decimalComparisonHigher) && 
+				( comparation_withdrawValue300 == decimalComparisonLower || comparation_withdrawValue300 == decimalComparisonEquals)) {
+			
+			return getWithdrawWithLowerFee(withdrawValue, transactionFeeResponse);
+		} else {
+			return getWithdrawWithMaxFee(withdrawValue, transactionFeeResponse);
+		}
+	}
+	
+	private static TransactionFeeResponse getWithdrawWithLowerFee(BigDecimal withdrawValue, TransactionFeeResponse transactionFeeResponse) {
+        BigDecimal percentageValue = new BigDecimal("0.4");
+
+        BigDecimal valorDecimal = percentageValue.divide(new BigDecimal("100"));
+        BigDecimal fee = withdrawValue.multiply(valorDecimal);
+        BigDecimal totalWithdrawValue = withdrawValue.add(fee);
+        
+        transactionFeeResponse.setTransactionValue(formatToLocalCurrency(withdrawValue));
+        transactionFeeResponse.setTransactionFeePercent("Porcentagem de juros: " + percentageValue + "%");
+        transactionFeeResponse.setFeeValue(formatToLocalCurrency(fee));
+        
+        transactionFeeResponse.setResult(totalWithdrawValue);
+
+        return transactionFeeResponse;
+	}
+	
+	private static TransactionFeeResponse getWithdrawWithMaxFee(BigDecimal withdrawValue, TransactionFeeResponse transactionFeeResponse) {
+        BigDecimal percentageValue = new BigDecimal("1");
+
+        BigDecimal valorDecimal = percentageValue.divide(new BigDecimal("100"));
+        BigDecimal fee = withdrawValue.multiply(valorDecimal);
+        BigDecimal totalWithdrawValue = withdrawValue.add(fee);
+        
+        transactionFeeResponse.setTransactionValue(formatToLocalCurrency(withdrawValue));
+        transactionFeeResponse.setTransactionFeePercent("Porcentagem de juros: " + percentageValue + "%");
+        transactionFeeResponse.setFeeValue(formatToLocalCurrency(fee));
+        transactionFeeResponse.setResult(totalWithdrawValue);
+        
+        return transactionFeeResponse;
+	}
+	
+	public static String formatToLocalCurrency(BigDecimal value) {
+		Locale brasil = new Locale("pt", "BR");
+		NumberFormat coinFormat = NumberFormat.getCurrencyInstance(brasil);
+
+		return coinFormat.format(value);
+	}
+}

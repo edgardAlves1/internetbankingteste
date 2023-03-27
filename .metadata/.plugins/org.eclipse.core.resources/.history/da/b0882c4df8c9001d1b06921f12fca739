@@ -1,0 +1,8 @@
+package com.santander.ib.service;
+
+import com.santander.ib.domain.Customer;
+
+public interface CustomerService {
+	
+	public Customer;
+}

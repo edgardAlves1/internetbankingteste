@@ -1,0 +1,55 @@
+package com.santander.ib.api.request;
+
+import java.math.BigDecimal;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+
+@JsonFormat(shape = JsonFormat.Shape.ARRAY)
+
+public class TransactionRequest {
+	
+	private String teste;
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((teste == null) ? 0 : teste.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TransactionRequest other = (TransactionRequest) obj;
+		if (teste == null) {
+			if (other.teste != null)
+				return false;
+		} else if (!teste.equals(other.teste))
+			return false;
+		return true;
+	}
+
+	
+//	private Integer type;
+//	
+//	private BigDecimal transactionValue;
+}

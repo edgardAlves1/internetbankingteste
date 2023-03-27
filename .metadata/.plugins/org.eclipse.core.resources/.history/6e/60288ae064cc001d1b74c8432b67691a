@@ -1,0 +1,14 @@
+package com.santander.ib.api.response;
+
+import lombok.Data;
+
+@Data
+public class Teste {
+	
+	private String valorX;
+	
+	private String valorY;
+	
+	private String valorZ;
+
+}

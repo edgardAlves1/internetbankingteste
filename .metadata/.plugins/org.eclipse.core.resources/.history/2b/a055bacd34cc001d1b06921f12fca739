@@ -1,0 +1,103 @@
+package com.santander.ib.service;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.santander.ib.api.mapper.CustomerMapperBB;
+import com.santander.ib.api.request.CustomerTransactionRequest;
+import com.santander.ib.api.response.CustomerResponse;
+import com.santander.ib.domain.entity.Customer;
+import com.santander.ib.domain.enums.TransactionType;
+import com.santander.ib.exception.BusinessException;
+import com.santander.ib.repository.CustomerRepository;
+import com.santander.ib.util.TransactionFeeUtil;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class CustomerServiceImpl implements CustomerService{
+	
+	@Autowired
+	private CustomerMapperBB customerMapperBB;
+	
+	@Autowired
+	private CustomerRepository customerRepository;
+	
+	
+
+	@Override
+	public List<CustomerResponse> listAll() {
+		return customerMapperBB.toListCustomerResponse(customerRepository.findAll());
+	}
+	
+	@Override
+	public Optional<Customer> getCustomerById(Long id) {
+		return customerRepository.findById(id);
+	}
+
+	@Override
+    public Customer editCustomer(Long customerId, Customer customerRequest) {
+        Optional<Customer> optCustomer = this.getCustomerById(customerId);
+
+        if (optCustomer.isEmpty()) {
+            throw new BusinessException("Cliente não encontrado na base");
+        }
+
+        customerRequest.setId(customerId);
+
+        return save(customerRequest);
+    }
+	
+	@Override
+	public Customer save(Customer customerRequest) {
+        boolean accountAlreadyRegistered = false;
+
+        Optional<Customer> optCustomer = customerRepository.findByAccountNumber(customerRequest.getAccountNumber());
+
+        if (optCustomer.isPresent()) {
+            if (!optCustomer.get().getId().equals(customerRequest.getId())) {
+            	accountAlreadyRegistered = true;
+            }
+        }
+
+        if (accountAlreadyRegistered) {
+            throw new BusinessException("Esta conta ja foi cadastrada");
+        }
+
+        return customerRepository.save(customerRequest);
+    }
+	
+	@Override
+    public Customer performBankOperation(Long customerId, CustomerTransactionRequest customerTransactionRequest) {
+        Optional<Customer> optCustomer = this.getCustomerById(customerId);
+
+        if (optCustomer.isEmpty()) {
+            throw new BusinessException("Não foi possível efetuar o saque, pois o cliente não encontrado na base");
+        }
+
+        return updateCustomerBalance(optCustomer.get(), customerTransactionRequest);
+    }
+	
+	public Customer updateCustomerBalance(Customer customer, CustomerTransactionRequest customerTransactionRequest) {
+		BigDecimal customerNewBalance;
+		
+		if(customerTransactionRequest.getTransactionType().equals(TransactionType.WITHDRAW)) {
+			customerNewBalance = customer.getBalance()
+					.subtract(TransactionFeeUtil.calculateWithdrawFee(customerTransactionRequest.getTransactionValue(), customer.getExclusivePlan())); 
+			customer.setBalance(customerNewBalance);
+		}else {
+			customerNewBalance = customer.getBalance()
+					.add(customerTransactionRequest.getTransactionValue()); 
+			customer.setBalance(customerNewBalance);
+		}
+		
+		return customerRepository.save(customer);
+    }
+}

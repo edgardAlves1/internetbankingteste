@@ -1,0 +1,68 @@
+package com.santander.ib.domain;
+
+import java.math.BigDecimal;
+
+
+
+public class TransactionFeeValues {
+	
+	private static int decimalComparisonLower = -1;
+	private static int decimalComparisonEquals = 0; 
+	private static int decimalComparisonHigher = 1;
+	
+	public static BigDecimal totalWithdrawWithFee(BigDecimal withdrawValue) {
+		int comparation_withdrawValue100 = withdrawValue.compareTo(new BigDecimal(100));
+		int comparation_withdrawValue300 = withdrawValue.compareTo(new BigDecimal(300));
+		
+		
+		 if( comparation_withdrawValue100 == decimalComparisonLower || comparation_withdrawValue100 == decimalComparisonEquals) {
+			 System.out.println("Valor do saque: " + withdrawValue);
+			return withdrawValue;
+		} else if( (comparation_withdrawValue100 == decimalComparisonHigher) && 
+				( comparation_withdrawValue300 == decimalComparisonLower || comparation_withdrawValue300 == decimalComparisonEquals)) {
+			return getWithdrawWithLowerFee(withdrawValue);
+		} else {
+			return getWithdrawWithMaxFee(withdrawValue);
+		}
+	}
+	
+	public static BigDecimal getWithdrawWithLowerFee(BigDecimal withdrawValue) {
+        BigDecimal percentageValue = new BigDecimal("0.4");
+
+        BigDecimal valorDecimal = percentageValue.divide(new BigDecimal("100"));
+        BigDecimal fee = withdrawValue.multiply(valorDecimal);
+        BigDecimal totalWithdrawValue = withdrawValue.add(fee);
+        
+        System.out.println("Valor do saque: " + totalWithdrawValue);
+        return totalWithdrawValue;
+	}
+	
+	public static BigDecimal getWithdrawWithMaxFee(BigDecimal withdrawValue) {
+        BigDecimal percentageValue = new BigDecimal("1");
+
+        BigDecimal valorDecimal = percentageValue.divide(new BigDecimal("100"));
+        BigDecimal fee = withdrawValue.multiply(valorDecimal);
+        BigDecimal totalWithdrawValue = withdrawValue.add(fee);
+        
+        System.out.println("Valor do saque: " + totalWithdrawValue);
+        return totalWithdrawValue;
+	}
+	
+	public static void main(String[] args) {
+		totalWithdrawWithFee(new BigDecimal(100));
+		
+//		BigDecimal withdrawValue = new BigDecimal("298");
+//        BigDecimal percentageValue = new BigDecimal("0.4");
+//
+//        BigDecimal valorDecimal = percentageValue.divide(new BigDecimal("100"));
+//        BigDecimal fee = withdrawValue.multiply(valorDecimal);
+//        BigDecimal totalValue = withdrawValue.add(fee);
+//
+//        System.out.println("Valor do saque: " + withdrawValue);
+//        System.out.println("Porcentagem de juros: " + percentageValue + "%");
+//        System.out.println("Valor dos juros: " + fee);
+//        System.out.println("Valor total do saque: " + totalValue);
+	}
+	 
+
+}

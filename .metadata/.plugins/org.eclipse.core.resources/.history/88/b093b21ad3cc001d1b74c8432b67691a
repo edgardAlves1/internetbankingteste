@@ -1,0 +1,93 @@
+package com.santander.ib.api.service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
+import com.santander.ib.api.mapper.CustomerMapper;
+import com.santander.ib.api.mapper.TransactionMapper;
+import com.santander.ib.api.request.CustomerRequest;
+import com.santander.ib.api.request.TransactionRequest;
+import com.santander.ib.domain.entity.Customer;
+import com.santander.ib.exception.BusinessException;
+import com.santander.ib.repository.CustomerRepository;
+import com.santander.ib.repository.TransactionRepository;
+import com.santander.ib.service.CustomerServiceImpl;
+
+@SpringBootTest
+@AutoConfigureMockMvc(addFilters = false)
+public class CustomerServiceTest {
+	
+	@MockBean
+	private CustomerMapper customerMapper;
+	
+	@MockBean
+	private CustomerRepository customerRepository;
+	
+	@MockBean
+	private TransactionRepository transactionRepository;
+	
+	@MockBean
+	private TransactionMapper transactionMapper;
+	
+	@Autowired
+	private CustomerServiceImpl customerService;
+	
+	@Test
+	public void listAllCustomersOkTest() {
+		customerService.listAll();
+	}
+	
+	@Test
+	public void getCustomerByIdOptTest() {
+		Long customerId = 1L;
+		customerService.getCustomerByIdOpt(customerId);
+	}
+	
+	@Test
+	public void getCustomerByIdTest() {
+		Long customerId = 1L;
+		Optional<Customer> optCustomer = Optional.of(new Customer());
+		Mockito.when(customerRepository.findById(customerId)).thenReturn(optCustomer);
+		
+		customerService.getCustomerById(customerId);
+	}
+	
+	@Test
+	public void editCustomerByIdTest() {
+		Long customerId = 1L;
+		CustomerRequest customerRequest = new CustomerRequest();
+		customerRequest.setAccountNumber("12346578");
+		customerRequest.setBalance(new BigDecimal(500.00));
+		customerRequest.setBirthDate(new Date());
+		customerRequest.setExclusivePlan(false);
+		customerRequest.setId(1L);
+		customerRequest.setName("Customer");
+   
+        List<TransactionRequest> transactionsRequest = new ArrayList<>();
+        TransactionRequest transaction = new TransactionRequest();
+        transaction.setTransactionDate(new Date());
+        transaction.setTransactionValue(new BigDecimal(550.00));
+        transaction.setType(1);
+        transactionsRequest.add(transaction);
+		customerRequest.setTransactions(transactionsRequest);
+		
+		Customer customer = customerMapper.toCustomer(customerRequest);
+		Mockito.when(customerRepository.save(new Customer())).thenReturn(customer);
+		
+		customerService.getCustomerById(customerId);
+	}
+	
+	
+
+}

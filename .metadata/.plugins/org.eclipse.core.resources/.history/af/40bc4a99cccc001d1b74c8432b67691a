@@ -1,0 +1,45 @@
+package com.santander.ib.api.service;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
+import com.santander.ib.api.mapper.CustomerMapper;
+import com.santander.ib.api.mapper.TransactionMapper;
+import com.santander.ib.repository.CustomerRepository;
+import com.santander.ib.repository.TransactionRepository;
+import com.santander.ib.service.CustomerServiceImpl;
+
+@SpringBootTest
+@AutoConfigureMockMvc(addFilters = false)
+public class CustomerServiceTest {
+	
+	@MockBean
+	private CustomerMapper customerMapper;
+	
+	@MockBean
+	private CustomerRepository customerRepository;
+	
+	@MockBean
+	private TransactionRepository transactionRepository;
+	
+	@MockBean
+	private TransactionMapper transactionMapper;
+	
+	@Autowired
+	private CustomerServiceImpl customerService;
+	
+	@Test
+	public void listAllCustomersOkTest() {
+		customerService.listAll();
+	}
+	
+	@Test
+	public void getCustomerByIdOptTest() {
+		Long customerId = 1L;
+		customerService.getCustomerByIdOpt(customerId);
+	}
+
+}

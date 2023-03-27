@@ -1,0 +1,11 @@
+package com.santander.ib.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.santander.ib.domain.entity.Customer;
+
+@Repository
+public interface TransactionRepository extends JpaRepository<Customer, Long> {
+
+}

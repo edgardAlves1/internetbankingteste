@@ -1,0 +1,75 @@
+package com.santander.ib.api.mapper;
+
+import com.santander.ib.api.request.TransactionRequest;
+import com.santander.ib.api.response.TransactionResponse;
+import com.santander.ib.domain.entity.Transaction;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = "org.mapstruct.ap.MappingProcessor",
+    date = "2023-03-26T22:53:54-0300",
+    comments = "version: 1.5.3.Final, compiler: Eclipse JDT (IDE) 3.18.0.v20190522-0428, environment: Java 11.0.2 (Oracle Corporation)"
+)
+@Component
+public class TransactionMapperImpl implements TransactionMapper {
+
+    @Override
+    public Transaction toTransaction(TransactionRequest transactionRequest) {
+        if ( transactionRequest == null ) {
+            return null;
+        }
+
+        Transaction transaction = new Transaction();
+
+        transaction.setTransactionValue( transactionRequest.getTransactionValue() );
+        transaction.setType( transactionRequest.getType() );
+
+        return transaction;
+    }
+
+    @Override
+    public List<Transaction> toTransaction(List<TransactionRequest> transactionRequestList) {
+        if ( transactionRequestList == null ) {
+            return null;
+        }
+
+        List<Transaction> list = new ArrayList<Transaction>( transactionRequestList.size() );
+        for ( TransactionRequest transactionRequest : transactionRequestList ) {
+            list.add( toTransaction( transactionRequest ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public TransactionResponse toTransactionResponse(Transaction transaction) {
+        if ( transaction == null ) {
+            return null;
+        }
+
+        TransactionResponse transactionResponse = new TransactionResponse();
+
+        transactionResponse.setId( transaction.getId() );
+        transactionResponse.setTransactionValue( transaction.getTransactionValue() );
+        transactionResponse.setType( transaction.getType() );
+
+        return transactionResponse;
+    }
+
+    @Override
+    public List<TransactionResponse> toTransactionResponseList(List<Transaction> transactionList) {
+        if ( transactionList == null ) {
+            return null;
+        }
+
+        List<TransactionResponse> list = new ArrayList<TransactionResponse>( transactionList.size() );
+        for ( Transaction transaction : transactionList ) {
+            list.add( toTransactionResponse( transaction ) );
+        }
+
+        return list;
+    }
+}

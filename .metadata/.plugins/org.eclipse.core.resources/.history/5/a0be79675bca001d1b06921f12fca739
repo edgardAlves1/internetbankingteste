@@ -1,0 +1,5 @@
+package com.santander.ib.mapper;
+
+public class CustomerMapper {
+
+}

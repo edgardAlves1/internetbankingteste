@@ -1,0 +1,21 @@
+package com.santander.ib.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.santander.ib.api.request.CustomerTransactionRequest;
+import com.santander.ib.api.response.CustomerResponse;
+import com.santander.ib.domain.entity.Customer;
+
+public interface CustomerService {
+	
+	public List<CustomerResponse> listAll();
+	
+	public Optional<Customer> getCustomerById(Long id);
+	
+	public Customer save(Customer customerRequest);
+	
+	public Customer editCustomer(Long customerId, Customer customerRequest);
+	
+	public Customer performBankOperation(Long customerId, CustomerTransactionRequest customerTransactionRequest);
+}
